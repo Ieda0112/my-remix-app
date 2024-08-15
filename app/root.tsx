@@ -1,12 +1,69 @@
+import type {
+  LinksFunction,
+  LoaderFunctionArgs,
+} from "@remix-run/node";
+import{json, redirect} from "@remix-run/node"
 import {
   Form,
+  Link,
   Links,
   Meta,
+  NavLink,
+  Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
+  useNavigation,
+  useSubmit,
 } from "@remix-run/react";
+import appStylesHref from "./app.css?url";
+import { createEmptyContact, getContacts } from "./data";
+import{ useEffect } from "react";
+import{ pokedata, fetchPoke } from "./pokedata"
+
+
+export const action = async () => {
+  const contact = await createEmptyContact();
+  return redirect(`/contacts/${contact.id}/edit`);
+};
+export const links: LinksFunction = () => [
+  { rel: "stylesheet", href: appStylesHref },
+];
+export const loader = async ({//API先からデータをロードしてくる
+  request,
+}: LoaderFunctionArgs) => {
+  const pokeList = await fetchPokelist()
+  
+  /*
+  for(let i=1;i<=151;i++){
+    const p = await fetchPoke(String(i));
+    if (p) {
+      pokeList.push(p);
+    }
+  }*/
+  return json({ pokeList });
+};
+export async function fetchPokelist() {
+  try {
+    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151&offset=0');
+    if (!response.ok) {
+      throw new Error('ネットワークエラー: ' + response.status);
+    }
+    const data = await response.json();
+
+    const pokeList = data.results.map((d, i) => {
+      return { id: i + 1, name: d.name }
+    });
+    return pokeList;
+
+  } catch (error) {
+    console.error('問題が発生しました。', error); // エラーが発生した場合の処理
+  }
+}
 
 export default function App() {
+  const { pokeList } = useLoaderData<typeof loader>();
+
   return (
     <html lang="en">
       <head>
@@ -18,31 +75,39 @@ export default function App() {
       <body>
         <div id="sidebar">
           <h1>Remix Contacts</h1>
-          <div>
-            <Form id="search-form" role="search">
-              <input
-                id="q"
-                aria-label="Search contacts"
-                placeholder="Search"
-                type="search"
-                name="q"
-              />
-              <div id="search-spinner" aria-hidden hidden={true} />
-            </Form>
-            <Form method="post">
-              <button type="submit">New</button>
-            </Form>
-          </div>
           <nav>
-            <ul>
-              <li>
-                <a href={`/contacts/1`}>Your Name</a>
-              </li>
-              <li>
-                <a href={`/contacts/2`}>Your Friend</a>
-              </li>
-            </ul>
+            {pokeList.length ? (
+              <ul>
+                {pokeList.map((pokemon) => (
+                  <li key={pokemon.id}>
+                    <NavLink
+                      className={({ isActive, isPending }) =>
+                        isActive
+                          ? "active"
+                          : isPending
+                          ? "pending"
+                          : ""
+                      }
+                      to={`pokemon/${pokemon.id}`}
+                    >
+                      <Link to={`pokemon/${pokemon.id}`}>
+                        { pokemon.name }
+                      </Link>
+                    </NavLink>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>
+                <i>No contacts</i>
+              </p>
+            )}
           </nav>
+        </div>
+        <div
+          id="detail"
+        >
+          <Outlet />
         </div>
 
         <ScrollRestoration />

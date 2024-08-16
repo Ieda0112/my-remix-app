@@ -39,7 +39,27 @@ export async function fetchPoke(i: string) {//ポケモンのIDから名前と�
       console.error('問題が発生しました。', error); // エラーが発生した場合の処理
     }
 }
+export async function fetchPost(i: string) {//ポケモンのIDから名前と正面画像を取得する関数
+  try {
+    const response = await fetch('http://127.0.0.1:5000/api/posts/'+i);
+    if (!response.ok) {
+      throw new Error('ネットワークエラー: ' + response.status);
+    }
+    const data = await response.json();
+    
+    const post = {
+      "id":data.id,
+      "author_id":data.author_id,
+      "created":data.created,
+      "title":data.title,
+      "body":data.body
+    }
+    return post;
 
+  } catch (error) {
+    console.error('問題が発生しました。', error); // エラーが発生した場合の処理
+  }
+}
 
 export async function pokelist(req: NextApiRequest, res: NextApiResponse) {
   const api = new PokemonClient();

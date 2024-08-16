@@ -45,16 +45,31 @@ export const loader = async ({//API先からデータをロードしてくる
 };
 export async function fetchPokelist() {
   try {
-    const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=151&offset=0');
+    const response = await fetch('http://127.0.0.1:5000/api/');
     if (!response.ok) {
       throw new Error('ネットワークエラー: ' + response.status);
     }
     const data = await response.json();
 
-    const pokeList = data.results.map((d, i) => {
-      return { id: i + 1, name: d.name }
-    });
-    return pokeList;
+    console.log(data)
+    
+    return data;
+
+  } catch (error) {
+    console.error('問題が発生しました。', error); // エラーが発生した場合の処理
+  }
+}
+export async function fetchPostlist() {
+  try {
+    const response = await fetch('http://127.0.0.1:5000/api/');
+    if (!response.ok) {
+      throw new Error('ネットワークエラー: ' + response.status);
+    }
+    const data = await response.json();
+
+    console.log(data)
+    
+    return data;
 
   } catch (error) {
     console.error('問題が発生しました。', error); // エラーが発生した場合の処理
@@ -76,6 +91,7 @@ export default function App() {
         <div id="sidebar">
           <h1>Remix Contacts</h1>
           <nav>
+            {/*
             {pokeList.length ? (
               <ul>
                 {pokeList.map((pokemon) => (
@@ -102,6 +118,7 @@ export default function App() {
                 <i>No contacts</i>
               </p>
             )}
+            */}
           </nav>
         </div>
         <div

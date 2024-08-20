@@ -46,9 +46,34 @@ export async function fetchPostlist() {
   }
 }
 
+
 export default function App() {
   // const { pokeList } = useLoaderData<typeof loader>();
+  var date = null;
+  const handleSubmit = async () => {
+    var date = null;
+    const url = 'http://127.0.0.1:5000/api/'; // 送信先のAPI URL
+    const post = {
+      "date":date
+    }
+    try {
+      const response = await fetch(
+        url, {
+        method: 'POST',
+        body: JSON.stringify(post), // JavaScriptオブジェクトをJSON文字列に変換して送信
+      });
 
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const responseData = await response.json(); // APIからのレスポンスをJSON形式で取得
+      console.log('Response from server:', responseData);
+
+    } catch (error) {
+      console.error('Error:', error);
+    }
+    // return redirect(`/flaskr/${contact.id}`);
+  }
   return (
     <html lang="en">
       <head>
@@ -61,6 +86,10 @@ export default function App() {
         <div
           id="detail"
         >
+        {/* <button onClick={handleSubmit}>Add</button>
+        <Form action="create">
+          <button type="submit">Edit</button>
+        </Form> */}
           <Outlet />
         </div>
 

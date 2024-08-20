@@ -19,7 +19,7 @@ import {
 import appStylesHref from "./app.css?url";
 import { createEmptyContact, getContacts } from "./data";
 import{ useEffect } from "react";
-import{ pokedata, fetchPoke } from "./pokedata"
+import{ fetchPoke } from "./pokedata"
 
 
 export const action = async () => {
@@ -29,36 +29,6 @@ export const action = async () => {
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStylesHref },
 ];
-export const loader = async ({//API先からデータをロードしてくる
-  request,
-}: LoaderFunctionArgs) => {
-  const pokeList = await fetchPokelist()
-  
-  /*
-  for(let i=1;i<=151;i++){
-    const p = await fetchPoke(String(i));
-    if (p) {
-      pokeList.push(p);
-    }
-  }*/
-  return json({ pokeList });
-};
-export async function fetchPokelist() {
-  try {
-    const response = await fetch('http://127.0.0.1:5000/api/');
-    if (!response.ok) {
-      throw new Error('ネットワークエラー: ' + response.status);
-    }
-    const data = await response.json();
-
-    console.log(data)
-    
-    return data;
-
-  } catch (error) {
-    console.error('問題が発生しました。', error); // エラーが発生した場合の処理
-  }
-}
 export async function fetchPostlist() {
   try {
     const response = await fetch('http://127.0.0.1:5000/api/');
@@ -77,7 +47,7 @@ export async function fetchPostlist() {
 }
 
 export default function App() {
-  const { pokeList } = useLoaderData<typeof loader>();
+  // const { pokeList } = useLoaderData<typeof loader>();
 
   return (
     <html lang="en">
@@ -88,39 +58,6 @@ export default function App() {
         <Links />
       </head>
       <body>
-        <div id="sidebar">
-          <h1>Remix Contacts</h1>
-          <nav>
-            {/*
-            {pokeList.length ? (
-              <ul>
-                {pokeList.map((pokemon) => (
-                  <li key={pokemon.id}>
-                    <NavLink
-                      className={({ isActive, isPending }) =>
-                        isActive
-                          ? "active"
-                          : isPending
-                          ? "pending"
-                          : ""
-                      }
-                      to={`pokemon/${pokemon.id}`}
-                    >
-                      <Link to={`pokemon/${pokemon.id}`}>
-                        { pokemon.name }
-                      </Link>
-                    </NavLink>
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p>
-                <i>No contacts</i>
-              </p>
-            )}
-            */}
-          </nav>
-        </div>
         <div
           id="detail"
         >

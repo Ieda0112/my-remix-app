@@ -59,7 +59,6 @@ export default function EditContact() {
   const [body, setBody] = useState(contact.body)
 
   const handleSubmit = async () => {
-    console.log("hoge")
     const url = 'http://127.0.0.1:5000/api/'+contact.id+'/update'; // 送信先のAPI URL
     const post = {
       "id":contact.id,
@@ -70,6 +69,10 @@ export default function EditContact() {
       const response = await fetch(
         url, {
         method: 'POST', // HTTPメソッド（POST, PUT, PATCHなど）
+        headers: {
+          //送信内容がjsonであることを宣言する
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(post), // JavaScriptオブジェクトをJSON文字列に変換して送信
       });
 
@@ -78,9 +81,10 @@ export default function EditContact() {
       }
 
       const responseData = await response.json(); // APIからのレスポンスをJSON形式で取得
+      console.log("hoge")
       console.log('Response from server:', responseData);
     } catch (error) {
-      console.error('Error:', error);
+      console.error('Error!!:', error);
     }
     // return redirect(`/flaskr/${contact.id}`);
   }

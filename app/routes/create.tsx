@@ -15,7 +15,7 @@ export default function Create() {
   const [name, setName] = useState("Burger King");  //店名
   const [genre, setGenre] = useState("Hamburger");  //ジャンル
   const [rating, setRating] = useState(2);  //評価値
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); //エラーメッセージ
   const YYYYWid = "100px";
   const MMDDWidth = "50px";
 
@@ -63,7 +63,7 @@ export default function Create() {
       <div>
       <h1>What did you eat?</h1>
 
-      <h2>Date</h2>
+      <h2>Date{" (required)"}</h2>
       <h3>Year / Month / Day</h3>
       <input name="year" id="year" value={year} onChange={(e) => setYear(e.target.value)}
       style={{ width: YYYYWid }}required />{" 年 "}
@@ -72,7 +72,7 @@ export default function Create() {
       <input name="day" id="day" value={day} onChange={(e) => setDay(e.target.value)}
       style={{ width: MMDDWidth }} required />{" 日 "}
       
-      <h2>Restaurant Name</h2>
+      <h2>Restaurant Name{" (required)"}</h2>
       <input
         name="name"
         id="name"
@@ -88,21 +88,16 @@ export default function Create() {
         onChange={(e) => setGenre(e.target.value)}/>
 
       <h2>Rating</h2>
-      <Box
-        sx={{
-          '& > legend': { mt: 2 },
-        }}
-      >
+      <Box sx={{'& > legend': { mt: 2 },}} >
         <Rating
-          name="simple-controlled"
-          value={rating}
+          name="rating" value={rating}
           onChange={(event, newRating) => {
             if (newRating === null) {
               setRating(0)
             } else {
               setRating(newRating);
             }
-            // setValue(newValue);
+            // setRating(newValue);
           }}
         />
       </Box>

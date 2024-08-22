@@ -50,7 +50,7 @@ export default function Index() {
   const [day, setDay] = useState("12");
   const YYYYWid = "100px";
   const MMDDWidth = "50px";
-  const [recentlyPosts, setRecentlyPosts] = useState<any[]>([]);
+  const [dailyPosts, setDailyPosts] = useState<any[]>([]);
 
   // ボタン処理関数　inputのデータを外に飛ばす
   const DateSubmit = async () => {
@@ -82,7 +82,7 @@ export default function Index() {
   useEffect(() => {
     const fetchData = async () => {
       const posts = await DateSubmit(); // fetchRecently を呼び出し
-      if(posts)  setRecentlyPosts(posts.daily_data);
+      if(posts)  setDailyPosts(posts.daily_data);
     };
     fetchData(); // データをフェッチする
   }, []);
@@ -112,14 +112,14 @@ export default function Index() {
         <h1>{year}/{month}/{day}</h1>
         <h2>Name / Genre / Rating</h2>
           <ul>
-            {recentlyPosts.map((post) => (
+            {dailyPosts.map((post) => (
               <li key={post.id}>
                 <h3>{post.name} / {post.genre} /
                 {Array.from({ length: post.rating }, (_, index) => (
                             <span key={index}> ⭐️</span>
                 ))}
                 {post.rating}
-                {/* <button onClick={()=>handleDelete(post.id)} style={{marginLeft: '50px', color:'red'} }>Delete</button> */}
+                <button onClick={()=>handleDelete(post.id)} style={{marginLeft: '50px', color:'red'} }>Delete</button>
                 </h3>
               </li>
             ))}

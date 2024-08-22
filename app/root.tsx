@@ -43,46 +43,18 @@ export async function fetchRecently(){ //直近10件の投稿を得る
   }
 }
 
-export const DateSubmit = async (date:string) => {
-  const url = 'http://127.0.0.1:5000/api/daily'; // 送信先のAPI URL
-  const post = {
-    "date":date
-  }
-  try {
-    const response = await fetch(
-      url, {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json", 
-      },
-      body: JSON.stringify(post), // JavaScriptオブジェクトをJSON文字列に変換して送信
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const responseData = await response.json(); // APIからのレスポンスをJSON形式で取得
-    console.log('Response from server:', responseData);
-
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
 export default function App() {
   const [recentlyPosts, setRecentlyPosts] = useState<any[]>([]); // デフォルトを空配列に
   useEffect(() => {
     const fetchData = async () => {
       const posts = await fetchRecently(); // fetchRecently を呼び出し
       if (posts) {
-        setRecentlyPosts(posts); // データを状態にセット
+        setRecentlyPosts(posts.recently_data);
       }
     };
 
     fetchData(); // データをフェッチする
   }, []); // 空の依存配列で初回レンダリング時にのみ実行
-  
-  const [date, setDate] = useState("2002-01-12");
 
   return (
     <html lang="en">
@@ -96,13 +68,20 @@ export default function App() {
         <div id="detail">
           <Outlet />
         </div>
-        <div>
+        <div id = "recent"
+        style={{width : "25%"}}
+        >
           <h1>Recent Posts</h1>
           <ul>
-            {/* fetchでpromiseになっている状態ではmap関数が使えなくてエラー */}
+            <h2>Name / Genre / Rating</h2>
             {recentlyPosts.map((post) => (
               <li key={post.id}>
-                <p>Name: {post.name} / Genre: {post.genre} / Rating: {post.rating}</p>
+                <h4>{post.name} / {post.genre} /
+                {Array.from({ length: post.rating }, (_, index) => (
+                            <span key={index}> ⭐️</span>
+                ))}
+                {post.rating}
+                </h4>
               </li>
             ))}
           </ul>

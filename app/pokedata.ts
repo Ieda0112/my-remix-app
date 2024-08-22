@@ -49,10 +49,10 @@ export async function fetchPost(i: string) {//ポストIDからポスト内容�
   }
 }
 
-// export async function pokelist(req: NextApiRequest, res: NextApiResponse) {
-//   const api = new PokemonClient();
-//   const listPokemon = await api.listPokemons();
-//   res.status(200).json({
-//     data: listPokemon,
-//   });
-// }
+export async function pokelist(req: NextApiRequest, res: NextApiResponse) {
+  const api = new PokemonClient();
+  const listPokemon = await api.listPokemons();
+  res.status(200).json({
+    data: listPokemon,
+  });
+}

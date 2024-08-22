@@ -16,38 +16,12 @@ import { useState } from "react";
 
 import { Box, Rating, Typography } from '@mui/material';
 
-
-export const sendAPI = async ({
-  params,
-  request,
-}: ActionFunctionArgs) => {
-  invariant(params.postId, "Missing postId param");
-  const url = 'http://127.0.0.1:5000/api/posts/'+params.postID+'/update'; // 送信先のAPI URL
-  const data = await request.formData();
-  try {
-    const response = await fetch(url, {
-      method: 'POST', // HTTPメソッド（POST, PUT, PATCHなど）
-      body: JSON.stringify(data), // JavaScriptオブジェクトをJSON文字列に変換して送信
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const responseData = await response.json(); // APIからのレスポンスをJSON形式で取得
-    console.log('Response from server:', responseData);
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-
 export default function EditContact() {
   // const { contact } = useLoaderData<typeof loader>();
   const navigate = useNavigate();
   const now = new Date
-  const [date, setDate] = useState(now); //
-  const [name, setName] = useState("Restaurant Name");
+  const [date, setDate] = useState("2002-01-12"); //YYYY-MM-DD
+  const [name, setName] = useState(now);
   const [genre, setGenre] = useState("Hamburg");
   const [value, setValue] = useState(2);
 
@@ -62,7 +36,10 @@ export default function EditContact() {
     try {
       const response = await fetch(
         url, {
-        method: 'POST', // HTTPメソッド（POST, PUT, PATCHなど）
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify(post), // JavaScriptオブジェクトをJSON文字列に変換して送信
       });
 
@@ -96,8 +73,7 @@ export default function EditContact() {
         name="genre"
         id="genre"
         value={genre}
-        onChange={(e) => setGenre(e.target.value)}
-        required />
+        onChange={(e) => setGenre(e.target.value)}/>
 
       <h2>Date</h2>
       <input
@@ -117,18 +93,20 @@ export default function EditContact() {
           name="simple-controlled"
           value={value}
           onChange={(event, newValue) => {
-            // if (newValue === null) {
-            //   setValue(0)
-            // } else {
-            //   setValue(newValue);
-            // }
-            setValue(newValue);
+            if (newValue === null) {
+              setValue(0)
+            } else {
+              setValue(newValue);
+            }
+            // setValue(newValue);
           }}
         />
       </Box>
 
       <p>
-        <button onClick={handleSubmit}>Save</button>
+        <Form action="/">
+          <button onClick={handleSubmit}>Save</button>
+        </Form>
         <button onClick={() => navigate(-1)} type="button">
             Cancel
         </button>

@@ -5,7 +5,7 @@ import type {
 import { json } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import invariant from "tiny-invariant";
-import{ pokelist, fetchPoke } from "../pokedata";
+import{ fetchPoke } from "../pokedata";
 
 export const loader = async ({
     params,

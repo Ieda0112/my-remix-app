@@ -1,48 +1,6 @@
 
-import {
-  Form,
-  Link,
-  Links,
-  Meta,
-  NavLink,
-  Outlet,
-  Scripts,
-  ScrollRestoration,
-  useLoaderData,
-  useNavigation,
-  useSubmit,
-} from "@remix-run/react";
-import appStylesHref from "./app.css?url";
-import{ useEffect,useState } from "react";
-import { colors } from "@mui/material";
-
-
-export const Delete = async (id:number, year:string, month:string, day:string) => {
-  const url = 'http://127.0.0.1:5000/api/delete'; // 送信先のAPI URL
-  const post = {
-    "id" : id
-  }
-  try {
-    const response = await fetch(
-      url, {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(post), // JavaScriptオブジェクトをJSON文字列に変換して送信
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const responseData = await response.json(); // APIからのレスポンスをJSON形式で取得
-    console.log('Response from server:', responseData);
-    return responseData;
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
+import { Form } from "@remix-run/react";
+import{ useState } from "react";
 
 export  const DateSubmit = async (year:string, month:string, day:string) => {
   const url = 'http://127.0.0.1:5000/api/daily'; // 送信先のAPI URL
@@ -71,23 +29,43 @@ export  const DateSubmit = async (year:string, month:string, day:string) => {
   }
 }
 
+export const Delete = async (id:number, year:string, month:string, day:string) => {
+  const url = 'http://127.0.0.1:5000/api/delete'; // 送信先のAPI URL
+  const post = {
+    "id" : id
+  }
+  try {
+    const response = await fetch(
+      url, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(post), // JavaScriptオブジェクトをJSON文字列に変換して送信
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const responseData = await response.json(); // APIからのレスポンスをJSON形式で取得
+    console.log('Response from server:', responseData);
+    return responseData;
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
 export default function Index() {
+  //変数
   const [year, setYear] = useState("2002");
   const [month, setMonth] = useState("01");
   const [day, setDay] = useState("12");
   const [date, setDate] = useState(`${year}年　${month}月　${day}日`);
+  const [dailyPosts, setDailyPosts] = useState<any[]>([]);
+  //定数
   const YYYYWid = "100px";
   const MMDDWidth = "50px";
-  const [dailyPosts, setDailyPosts] = useState<any[]>([]);
-
- 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const posts = await DateSubmit(); // fetchRecently を呼び出し
-  //     if(posts)  setDailyPosts(posts.daily_data);
-  //   };
-  //   fetchData(); // データをフェッチする
-  // }, []);
 
   // ボタン処理関数　inputのデータを外に飛ばす
   const handleDateSubmit = async (year:string, month:string, day:string) =>{
@@ -138,7 +116,7 @@ export default function Index() {
           <h2>Name</h2>  <h2>Genre</h2>  <h2>Rating</h2>
         </div>
         {dailyPosts.map((post) => (
-          <div style={{display: "grid", gridTemplateColumns: "repeat(4, 1fr)"}}>
+          <div key={post.id} style={{display: "grid", gridTemplateColumns: "repeat(4, 1fr)"}}>
             <h4>{post.name}</h4>
             <h4>{post.genre}</h4>
             <h4>{Array.from({ length: post.rating }, (_, index) => (

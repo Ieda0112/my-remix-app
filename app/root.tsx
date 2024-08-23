@@ -66,25 +66,25 @@ export default function App() {
       </head>
       <body>
         <div id="detail">
+          <h1 style={{color:"orange"}}>外食記録アプリ　外食レポ</h1>
           <Outlet />
         </div>
-        <div id = "recent"
-        style={{width : "25%"}}
-        >
+        <div id = "recent" style={{width : "25%"}}>
           <h1>Recent Posts</h1>
-          <ul>
-            <h2>Name / Genre / Rating</h2>
-            {recentlyPosts.map((post) => (
-              <li key={post.id}>
-                <h4>{post.name} / {post.genre} /
+          <div style={{display: "grid", gridTemplateColumns: "repeat(3, 1fr)"}}>
+            <h2>Name</h2> <h2>Genre</h2>  <h2>Rating</h2>
+          </div>
+          {recentlyPosts.map((post) => (
+            <div key={post.id} style={{display: "grid", gridTemplateColumns: "repeat(3, 1fr)"}}>
+              <h4>{post.name}</h4>
+              <h4>{post.genre}</h4>
+              <h4>
                 {Array.from({ length: post.rating }, (_, index) => (
-                            <span key={index}> ⭐️</span>
+                  <span key={index}> ⭐️</span>
                 ))}
-                {post.rating}
-                </h4>
-              </li>
-            ))}
-          </ul>
+              </h4>
+            </div>
+          ))}
         </div>
 
         <ScrollRestoration />

@@ -1,60 +1,7 @@
 
 import { Form } from "@remix-run/react";
 import{ useState } from "react";
-
-export  const DateSubmit = async (year:string, month:string, day:string) => {
-  const url = 'http://127.0.0.1:5000/api/daily'; // 送信先のAPI URL
-  var date = `${year}-${month}-${day}`
-  const post = {
-    "date":date
-  }
-  try {
-    const response = await fetch(
-      url, {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json", //JSONを送ることを明示
-      },
-      body: JSON.stringify(post), // JavaScriptオブジェクトをJSON文字列に変換して送信
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const responseData = await response.json(); // APIからのレスポンスをJSON形式で取得
-    return responseData;
-
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
-
-export const Delete = async (id:number, year:string, month:string, day:string) => {
-  const url = 'http://127.0.0.1:5000/api/delete'; // 送信先のAPI URL
-  const post = {
-    "id" : id
-  }
-  try {
-    const response = await fetch(
-      url, {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(post), // JavaScriptオブジェクトをJSON文字列に変換して送信
-    });
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const responseData = await response.json(); // APIからのレスポンスをJSON形式で取得
-    console.log('Response from server:', responseData);
-    return responseData;
-  } catch (error) {
-    console.error('Error:', error);
-  }
-}
+import{ DateSubmit, Delete} from "app/fetch"
 
 export default function Index() {
   //変数
@@ -65,7 +12,7 @@ export default function Index() {
   const [dailyPosts, setDailyPosts] = useState<any[]>([]);
   //定数
   const YYYYWid = "100px";
-  const MMDDWidth = "50px";
+  const MMDDWid = "50px";
 
   // ボタン処理関数　inputのデータを外に飛ばす
   const handleDateSubmit = async (year:string, month:string, day:string) =>{
@@ -74,43 +21,49 @@ export default function Index() {
     setDate(`${year}年　${month}月　${day}日`)  //表示する日付を変える
   }
   const handleDelete = async (id:number) =>{
-    await Delete(id,year,month,date);
+    await Delete(id);
     const responseData = await DateSubmit(year,month,day)
     if(responseData)  setDailyPosts(responseData.daily_data); //dailyPostsに取得したデータを入れる
   }
-
   
     return (
       <div>
-        <div style={{display: "grid", gridTemplateColumns: "repeat(4, 1fr)"}}>
-          <h2>Year</h2> <h2>Month</h2>  <h2>Day</h2> <div></div>
-          <div>
-            <input
-              name="year" id="year" value={year} onChange={(e) => setYear(e.target.value)}
-              style={{ width: YYYYWid }} required />
-            {" 年 "}
+        <Form>
+          <div style={{display: "grid", gridTemplateColumns: "repeat(4, 1fr)"}}>
+            <h2>Year</h2> <h2>Month</h2>  <h2>Day</h2> <div></div>
+            <div>
+              <input
+                name="year" id="year" value={year} onChange={(e) => setYear(e.target.value)}
+                placeholder={year}
+                pattern="\d{4}" maxLength={4}
+                style={{ width: YYYYWid }} required />
+              {" 年 "}
+            </div>
+            <div>
+              <input
+                name="month" id="month" value={month} onChange={(e) => setMonth(e.target.value)}
+                placeholder={month}
+                pattern="\d{2}" maxLength={2}
+                style={{ width: MMDDWid }} required />
+              {" 月 "}
+            </div>
+            <div>
+              <input
+                name="day" id="day" value={day} onChange={(e) => setDay(e.target.value)}
+                placeholder={day}
+                pattern="\d{2}" maxLength={2}
+                style={{ width: MMDDWid }} required />
+              {" 日 "}
+            </div>
+            <div>
+              <button onClick={() => handleDateSubmit(year,month,day)} style={{float: "right"}}>Search</button>
+            </div>
           </div>
-          <div>
-            <input
-              name="month" id="month" value={month} onChange={(e) => setMonth(e.target.value)}
-              style={{ width: MMDDWidth }} required />
-            {" 月 "}
-          </div>
-          <div>
-            <input
-              name="day" id="day" value={day} onChange={(e) => setDay(e.target.value)}
-              style={{ width: MMDDWidth }} required />
-            {" 日 "}
-          </div>
-          <div>
-            <button onClick={() => handleDateSubmit(year,month,day)} style={{float: "right"}}>Search</button>
-          </div>
-        </div>
-        <div>
-        <Form action="create">
-          <button type="submit">Add New Report</button>
         </Form>
-        </div>
+        <br/>
+        <Form action="create">
+              <button type="submit">Add New Report</button>
+        </Form>
         <h2>{date}</h2>
         <div style={{display: "grid", gridTemplateColumns: "repeat(4, 1fr)"}}>
           <h2>Name</h2>  <h2>Genre</h2>  <h2>Rating</h2>

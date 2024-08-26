@@ -1,30 +1,15 @@
-import type {
-  LinksFunction,
-  LoaderFunctionArgs,
-} from "@remix-run/node";
-import{json, redirect} from "@remix-run/node"
+import type { LinksFunction } from "@remix-run/node";
 import {
-  Form,
-  Link,
   Links,
   Meta,
-  NavLink,
   Outlet,
   Scripts,
-  ScrollRestoration,
-  useLoaderData,
-  useNavigation,
-  useSubmit,
+  ScrollRestoration
 } from "@remix-run/react";
 import appStylesHref from "./app.css?url";
-import { createEmptyContact, getContacts } from "./data";
 import{ useEffect,useState } from "react";
 
 
-export const action = async () => {
-  const contact = await createEmptyContact();
-  return redirect(`/contacts/${contact.id}/edit`);
-};
 export const links: LinksFunction = () => [
   { rel: "stylesheet", href: appStylesHref },
 ];
@@ -66,7 +51,12 @@ export default function App() {
       </head>
       <body>
         <div id="detail">
-          <h1 style={{color:"orange"}}>外食記録アプリ　外食レポ</h1>
+          <h1 style={{
+            color:"orange",
+            textShadow:"0px 1px 0 #0000F0"
+          }}>
+            外食記録アプリ　外食レポ
+          </h1>
           <Outlet />
         </div>
         <div id = "recent" style={{width : "25%"}}>
